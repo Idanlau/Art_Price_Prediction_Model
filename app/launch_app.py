@@ -19,7 +19,8 @@ def load_input():
     #     print("got it")
 
     if artist is not None:
-        pass #enter code here for searching artist
+
+        print("getting artist") #enter code here for searching artist
 
 def main():
     st.title('Image upload demo')
