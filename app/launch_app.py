@@ -1,5 +1,6 @@
 #pip install streamlit
 #streamlit run launch_app.py
+from scripts.Determine_Fame import biography_artsy
 
 import streamlit as st
 
@@ -19,8 +20,8 @@ def load_input():
     #     print("got it")
 
     if artist is not None:
-
-        print("getting artist") #enter code here for searching artist
+        print("getting artist")
+        fame = len(biography_artsy(artist))
 
 def main():
     st.title('Image upload demo')
