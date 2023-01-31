@@ -1,6 +1,6 @@
 #pip install streamlit
 #streamlit run launch_app.py
-# from src.Determine_Fame import biography_artsy
+from Determine_Fame import *
 import joblib
 
 import streamlit as st
@@ -8,7 +8,7 @@ import numpy as np
 forest = joblib.load("../scripts/ArtNum.joblib")
 # image_regressor = joblib.load("../scripts/image_regressor.joblib")
 
-st.title("Artist prediction model Itay Tal")
+st.title("Artist prediction model")
 
 def load_input():
     uploaded_file = st.file_uploader(label='Pick an image to test')
@@ -32,20 +32,19 @@ def load_input():
     environmental_art = st.text_input("Environmental Art? ") #11
     art_deco = st.text_input("Art Deco? ") #6
 
-    # if artist is not None:
-    #     print("getting artist")
-    #     fame = len(biography_artsy(artist).split())
     submit = st.button('Submit')
 
     st.write(submit)
 
     if submit:
-        input_data = [artist,year,Abstract,
+        print("Fame")
+        fame = biography_artsy(str(artist))
+        input_data = [fame,year,Abstract,
                       abstract_express,art_brut,art_deco,
                       art_nouveau,baroque,conceptual,cubism,
                       environmental_art,expressionisim,
                       feminist_art,geometric_abstraction,impressionism]
-        print(forest.predict([input_data]))
+        st.text("Predicted Sell Price (USD): " + str(forest.predict([input_data])))
 
 
 
