@@ -9,7 +9,8 @@ runtimes:
   - editor: Workbench
     kernel: Python 3.9                    # Fill in the Python version used for your AMP
     edition: Standard
-    browser: chrome
+    browser-type: chrome
+    headless-browsing: no
 
 tasks:
   - type: run_session

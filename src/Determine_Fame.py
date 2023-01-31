@@ -38,39 +38,56 @@ def name_similarity(text1, text2):
     return cosine_sim_vectors(vector[0], vector[1])
 
 
-def setup():
-    global artists_data
-    artists_data = pd.read_csv("https://raw.githubusercontent.com/Idanlau/Cloudera_Hackathon/main/artDataset.csv")
-    global artists
-    artists = artists_data["artist"].tolist()
-
+def start_driver():
     browser_mat = {"name": ["chrome", "firefox", "microsoft edge"],
                    "threshold": [0.6, 0.6, 0.4],
                    "driver": [webdriver.Chrome, webdriver.Firefox, webdriver.Edge],
                    "service": [ChromeService, FirefoxService, EdgeService],
-                   "manager": [ChromeDriverManager, GeckoDriverManager, EdgeChromiumDriverManager]}
+                   "manager": [ChromeDriverManager, GeckoDriverManager, EdgeChromiumDriverManager],
+                   "options": [webdriver.ChromeOptions(), webdriver.FirefoxOptions(), webdriver.EdgeOptions()]}
     global driver
     with open("../.project-metadata.yaml") as yaml_config:
-        browser = yaml.load(yaml_config, yaml.FullLoader)["runtimes"][0]["browser"]
+        configs = yaml.load(yaml_config, yaml.FullLoader)
+        browser = configs["runtimes"][0]["browser-type"]
+        headless = configs["runtimes"][0]["headless-browsing"]
+    if name_similarity(str(headless), "true") > 0.6:
+        for ind in range(len(browser_mat["name"])):
+            browser_mat["options"][ind].add_argument("--headless")
     if browser is not None:
         for ind in range(len(browser_mat["name"])):
             if name_similarity(browser, browser_mat["name"][ind]) > browser_mat["threshold"][ind]:
                 try:
-                    driver = browser_mat["driver"][ind](service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()))
+                    driver = browser_mat["driver"][ind](
+                        service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()),
+                        options=browser_mat["options"][ind])
                     break
                 except selenium.common.exceptions.SessionNotCreatedException:
                     continue
     if driver is None:
         for ind in range(0, len(browser_mat["name"])):
             try:
-                driver = browser_mat["driver"][ind](service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()))
+                driver = browser_mat["driver"][ind](
+                    service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()),
+                    options=browser_mat["options"][ind])
                 break
             except selenium.common.exceptions.SessionNotCreatedException:
                 continue
     if driver is not None:
         driver.implicitly_wait(1)
         return
-    raise selenium.common.exceptions.SessionNotCreatedException("Please have Chrome, Firefox, or Microsoft Edge available.")
+    raise selenium.common.exceptions.SessionNotCreatedException( "Please have Chrome, Firefox, or Microsoft Edge available.")
+
+
+def end_driver():
+    driver.close()
+
+
+def setup():
+    global artists_data
+    artists_data = pd.read_csv("https://raw.githubusercontent.com/Idanlau/Cloudera_Hackathon/main/artDataset.csv")
+    global artists
+    artists = artists_data["artist"].tolist()
+    start_driver()
 
 
 def artsy_link(artist):
