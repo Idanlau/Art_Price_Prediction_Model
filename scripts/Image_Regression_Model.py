@@ -70,7 +70,7 @@ model.fit(train_generator,
           steps_per_epoch=train_generator.samples // batch_size,
           validation_data=test_generator,
           validation_steps=test_generator.samples // batch_size,
-          epochs=2,
+          epochs=30,
           callbacks=[checkpointer])
 test_mae = model.evaluate(x=test_generator, verbose=0)
 print('Test MAE:', test_mae)
