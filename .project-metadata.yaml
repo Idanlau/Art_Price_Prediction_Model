@@ -19,14 +19,20 @@ tasks:
     cpu: 1
 
   - type: run_session
-    name: Download Data
-    script: scripts/download_data.py      # enter pathname of your data download script
+    name: Preparing data
+    script: scripts/train_data.py      # enter pathname of your data download script
     memory: 2
     cpu: 1
 
   - type: run_session
     name: Train Model
-    script: scripts/train.py              # enter the pathname of your model training script
+    script: scripts/Numerical_Model.py              # enter the pathname of your model training script
+    memory: 4
+    cpu: 2
+
+  - type: run_session
+    name: Train Model 2
+    script: scripts/Image_Regression_Model.py              # enter the pathname of your model training script
     memory: 4
     cpu: 2
 
@@ -34,7 +40,7 @@ tasks:
     short_summary: Launch application
     name: My Vizualation Application      # Name your application
     subdomain: mlapp
-    script: scripts/launch_app.py         # enter the pathname of script that launches your visualization/application
+    script: app/launch_app.py         # enter the pathname of script that launches your visualization/application
     environment_variables:
       TASK_TYPE: START_APPLICATION
     cpu: 1
