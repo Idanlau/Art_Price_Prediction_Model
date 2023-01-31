@@ -9,6 +9,8 @@ The data for the numerical model was taken from a premade dataset on Kaggle. The
 
 The image data used to train the computer vision model is derived from the Sotheby's website, which has an online database of many art auction images of various movements and genres and the selling price for those movements. The website link can be found here: https://www.sothebys.com/en/buy/private-sales/contemporary-art?locale=en
 
+<img src="/docs/Sotheby's Image.png" alt="My cool logo"/>
+
 After using web scraping techniques to generate a CSV file with the links to download all the images, we wrote a downloader script to download those images into a folder and split these folders by the movement of art. The downloader scripts can be found in the ImageDownloader folder (https://github.com/Idanlau/Cloudera_Hackathon/tree/main/scripts/ImageDownloader). 
 
 ## Numerical Model
