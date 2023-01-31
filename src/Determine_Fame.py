@@ -1,17 +1,21 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-import nltk
 import pandas as pd
 import selenium.common.exceptions
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 import time
 import unicodedata
 
-nltk.download("stopwords")
-
-from nltk.corpus import stopwords
-
-stopword = stopwords.words('english')
+artists_data = pd.DataFrame()
+artists, artists_fame, unavailable_artists = [], [], []
+unique_artists = {}
+driver = webdriver.Chrome()
 
 
 def clean_string(text):
@@ -33,13 +37,19 @@ def name_similarity(text1, text2):
     return cosine_sim_vectors(vector[0], vector[1])
 
 
-artists_data = pd.read_csv("artDataset.csv")
-artists = artists_data["artist"].tolist()
-artists_fame, unavailable_artists = [], []
-unique_artists = {}
-
-driver = webdriver.Chrome("C:\\Users\\james\\Downloads\\chromedriver")
-driver.implicitly_wait(1)
+def setup(platform):
+    global artists_data
+    artists_data = pd.read_csv("artDataset.csv")
+    global artists
+    artists = artists_data["artist"].tolist()
+    global driver
+    if name_similarity(platform, "chrome") > 0.6:
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager.install()))
+    elif name_similarity(platform, "firefox") > 0.6:
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+    elif name_similarity(platform, "microsoft edge") > 0.4:
+        driver = webdriver.ChromiumEdge(service=EdgeService(EdgeChromiumDriverManager().install()))
+    driver.implicitly_wait(1)
 
 
 def artsy_link(artist):
@@ -102,42 +112,21 @@ def biography_artsy(artist):
     return ""
 
 
-def store_temp_csv():
-    temp_fame = artists_fame.copy()
-    temp_data = artists_data.copy()
-    while len(temp_fame) < len(temp_data):
-        temp_fame.append(None)
-    temp_data.insert(2, "fame", temp_fame)
-    temp_data.to_csv("temp_fame.csv")
+def generate_artist_fame():
+    for artist in artists:
+        if artist not in unique_artists:
+            biography = biography_artsy(artist)
+            fame = len(biography.split())
+            artists_fame.append(fame)
+            unique_artists[artist] = fame
+        else:
+            artists_fame.append(unique_artists[artist])
+
+    unavailable_artists_file = open("unavailable_artists.txt", "w")
+    unavailable_artists_file.write(str(unavailable_artists))
+    while len(artists_fame) < len(artists_data):
+        artists_fame.append(None)
+    artists_data.insert(artists_data.columns.get_loc("artist") + 1, "fame", artists_fame)
+    artists_data.to_csv("artist_fame.csv")
 
 
-offset = 0
-"""
-# Find the index of the last valid fame if exception occurs
-for fame_ind in range(len(artists_fame)):
-    if pd.isna(artists_fame[fame_ind]):
-        offset = fame_ind
-        break
-artists_fame = artists_fame[:offset]
-"""
-lim = len(artists)
-for iter in range(offset):
-    artists_fame.append(None)
-for artist in artists[offset:lim]:
-    if artist not in unique_artists:
-        biography = biography_artsy(artist)
-        fame = len(biography.split())
-        artists_fame.append(fame)
-        unique_artists[artist] = fame
-    else:
-        artists_fame.append(unique_artists[artist])
-    if len(artists_fame) % 20 == 0:
-        store_temp_csv()
-
-unavailable_artists_file = open("unavailable_artists.txt", "w")
-unavailable_artists_file.write(str(unavailable_artists))
-while len(artists_fame) < len(artists_data):
-    artists_fame.append(None)
-artists_data.insert(artists_data.columns.get_loc("artist") + 1, "fame", artists_fame)
-artists_data.to_csv("artist_fame.csv")
-print(artists_data[["artist", "fame"]].head(lim))
