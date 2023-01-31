@@ -1,8 +1,12 @@
 #pip install streamlit
 #streamlit run launch_app.py
-from scripts.Determine_Fame import biography_artsy
+from src.Determine_Fame import biography_artsy
+import joblib
 
 import streamlit as st
+
+forest = joblib.load("ArtNum.joblib")
+image_regressor = joblib.load("image_regressor.joblib")
 
 st.title("Artist prediction model Itay Tal")
 def load_input():
@@ -21,7 +25,7 @@ def load_input():
 
     if artist is not None:
         print("getting artist")
-        fame = len(biography_artsy(artist))
+        fame = len(biography_artsy(artist).split())
 
 def main():
     st.title('Image upload demo')

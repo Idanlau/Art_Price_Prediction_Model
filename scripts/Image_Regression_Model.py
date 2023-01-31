@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.model_selection import train_test_split
+import joblib
 
 # Load the csv file into a pandas dataframe
 df = pd.read_csv("artDataset.csv")
@@ -74,3 +75,4 @@ model.fit(train_generator,
 test_mae = model.evaluate(x=test_generator, verbose=0)
 print('Test MAE:', test_mae)
 
+joblib.dump(model, 'image_regressor.joblib')
