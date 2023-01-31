@@ -1,4 +1,4 @@
 from src.Determine_Fame import setup, generate_artist_fame
 
-setup("Chrome")
+setup()
 generate_artist_fame()

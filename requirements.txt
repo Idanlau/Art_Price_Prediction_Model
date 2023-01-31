@@ -6,3 +6,4 @@ scikit_learn==1.2.1
 selenium==4.8.0
 streamlit==1.17.0
 tensorflow==2.11.0
+webdriver_manager==3.8.5
