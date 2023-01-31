@@ -5,8 +5,8 @@ import joblib
 
 import streamlit as st
 import numpy as np
-forest = joblib.load("ArtNum.joblib")
-# image_regressor = joblib.load("image_regressor.joblib")
+forest = joblib.load("../scripts/ArtNum.joblib")
+# image_regressor = joblib.load("../scripts/image_regressor.joblib")
 
 st.title("Artist prediction model Itay Tal")
 

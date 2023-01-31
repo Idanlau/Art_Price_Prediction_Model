@@ -1,6 +1,7 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
+import yaml
 import selenium.common.exceptions
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -15,7 +16,7 @@ import unicodedata
 artists_data = pd.DataFrame()
 artists, artists_fame, unavailable_artists = [], [], []
 unique_artists = {}
-driver = webdriver.Chrome()
+driver = None
 
 
 def clean_string(text):
@@ -37,19 +38,39 @@ def name_similarity(text1, text2):
     return cosine_sim_vectors(vector[0], vector[1])
 
 
-def setup(platform):
+def setup():
     global artists_data
-    artists_data = pd.read_csv("artDataset.csv")
+    artists_data = pd.read_csv("https://raw.githubusercontent.com/Idanlau/Cloudera_Hackathon/main/artDataset.csv")
     global artists
     artists = artists_data["artist"].tolist()
+
+    browser_mat = {"name": ["chrome", "firefox", "microsoft edge"],
+                   "threshold": [0.6, 0.6, 0.4],
+                   "driver": [webdriver.Chrome, webdriver.Firefox, webdriver.Edge],
+                   "service": [ChromeService, FirefoxService, EdgeService],
+                   "manager": [ChromeDriverManager, GeckoDriverManager, EdgeChromiumDriverManager]}
     global driver
-    if name_similarity(platform, "chrome") > 0.6:
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager.install()))
-    elif name_similarity(platform, "firefox") > 0.6:
-        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
-    elif name_similarity(platform, "microsoft edge") > 0.4:
-        driver = webdriver.ChromiumEdge(service=EdgeService(EdgeChromiumDriverManager().install()))
-    driver.implicitly_wait(1)
+    with open("../.project-metadata.yaml") as yaml_config:
+        browser = yaml.load(yaml_config, yaml.FullLoader)["runtimes"][0]["browser"]
+    if browser is not None:
+        for ind in range(len(browser_mat["name"])):
+            if name_similarity(browser, browser_mat["name"][ind]) > browser_mat["threshold"][ind]:
+                try:
+                    driver = browser_mat["driver"][ind](service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()))
+                    break
+                except selenium.common.exceptions.SessionNotCreatedException:
+                    continue
+    if driver is None:
+        for ind in range(0, len(browser_mat["name"])):
+            try:
+                driver = browser_mat["driver"][ind](service=browser_mat["service"][ind](browser_mat["manager"][ind]().install()))
+                break
+            except selenium.common.exceptions.SessionNotCreatedException:
+                continue
+    if driver is not None:
+        driver.implicitly_wait(1)
+        return
+    raise selenium.common.exceptions.SessionNotCreatedException("Please have Chrome, Firefox, or Microsoft Edge available.")
 
 
 def artsy_link(artist):
@@ -121,12 +142,15 @@ def generate_artist_fame():
             unique_artists[artist] = fame
         else:
             artists_fame.append(unique_artists[artist])
-
-    unavailable_artists_file = open("unavailable_artists.txt", "w")
-    unavailable_artists_file.write(str(unavailable_artists))
-    while len(artists_fame) < len(artists_data):
-        artists_fame.append(None)
+    driver.close()
     artists_data.insert(artists_data.columns.get_loc("artist") + 1, "fame", artists_fame)
     artists_data.to_csv("artist_fame.csv")
 
 
+def main():
+    setup()
+    generate_artist_fame()
+
+
+if __name__ == "__main__":
+    main()
