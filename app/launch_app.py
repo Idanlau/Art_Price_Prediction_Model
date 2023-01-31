@@ -2,11 +2,12 @@
 #streamlit run launch_app.py
 from Determine_Fame import *
 import joblib
-
 import streamlit as st
 import numpy as np
-forest = joblib.load("../scripts/ArtNum.joblib")
-# image_regressor = joblib.load("../scripts/image_regressor.joblib")
+import keras
+
+forest = joblib.load("ArtNum.joblib")
+image_regressor = keras.models.load_model("Image_Regressor.h5")
 
 st.title("Artist prediction model")
 
@@ -37,13 +38,15 @@ def load_input():
     st.write(submit)
 
     if submit:
-        print("Fame")
-        fame = biography_artsy(str(artist))
+        print(biography_artsy(str(artist)).split())
+        fame = len(biography_artsy(str(artist)).split())
         input_data = [fame,year,Abstract,
                       abstract_express,art_brut,art_deco,
                       art_nouveau,baroque,conceptual,cubism,
                       environmental_art,expressionisim,
                       feminist_art,geometric_abstraction,impressionism]
+
+        image_regr_price = image_regressor.predict(image_data)
         st.text("Predicted Sell Price (USD): " + str(forest.predict([input_data])))
 
 
