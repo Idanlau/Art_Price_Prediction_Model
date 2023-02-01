@@ -13,7 +13,7 @@ After experimenting with 3 different models, Random forest regressor, Multiple l
 
 
 ## Computer Vision
-The conmputer vis
+The computer vision procedure utilizes a multi-layered CNN trained in an unsupervised manner. This model is assembled through the Keras library, utilizing various convolution layers feeding into an adams optimizer.
 
 - bag of words
 - random forest

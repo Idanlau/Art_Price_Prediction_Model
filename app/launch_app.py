@@ -5,6 +5,8 @@ import joblib
 import streamlit as st
 import numpy as np
 import keras
+import cv2
+from PIL import Image
 
 forest = joblib.load("ArtNum.joblib")
 image_regressor = keras.models.load_model("Image_Regressor.h5")
@@ -16,6 +18,7 @@ def load_input():
     if uploaded_file is not None:
         image_data = uploaded_file.getvalue()
         st.image(image_data)
+        image_array = np.array(Image.open(uploaded_file))
 
     artist = st.text_input("artist? ") #1
     year = st.text_input("year? ") #2
@@ -46,7 +49,11 @@ def load_input():
                       environmental_art,expressionisim,
                       feminist_art,geometric_abstraction,impressionism]
 
-        image_regr_price = image_regressor.predict(image_data)
+
+        image_array = cv2.resize(image_array, (150, 150), interpolation=cv2.INTER_AREA)
+        image_array = np.expand_dims(image_array, axis=0)
+        image_regr_price = image_regressor.predict(image_array)
+        print(image_regr_price)
         st.text("Predicted Sell Price (USD): " + str(forest.predict([input_data])))
 
 

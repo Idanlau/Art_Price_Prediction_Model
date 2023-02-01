@@ -11,6 +11,7 @@ runtimes:
     edition: Standard
     browser-type: chrome
     headless-browsing: no
+    dataset-existing: yes
 
 tasks:
   - type: run_session
