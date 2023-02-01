@@ -14,7 +14,7 @@ The image data used to train the computer vision model is derived from the Sothe
 
 <img src="/docs/Sotheby's Image.png"/>
 
-After using web scraping techniques to generate a CSV file with the links to download all the images, we wrote a downloader script to download those images into a folder and split these folders by the movement of art. The downloader scripts can be found in the ImageDownloader folder (https://github.com/Idanlau/Cloudera_Hackathon/tree/main/scripts/ImageDownloader). 
+After using web scraping techniques to generate a CSV file with the links to download all the images, we wrote a downloader script to download those images into a folder and split these folders by the movement of art. The downloader scripts can be found in the ImageDownloader folder (https://github.com/Idanlau/Art_Price_Prediction_Model/tree/main/scripts/ImageDownloader). 
 
 ## Numerical Model
 After experimenting with 3 different models, Random forest regressor, Multiple linear regression and KNN regressor, Random Forest Regressor yeilded the best results and the metric used to evaluate the models were Mean Average Error. Preprocessing techniques to deal with categorical data was one hot encoding and for text based data, bag of words was used.
