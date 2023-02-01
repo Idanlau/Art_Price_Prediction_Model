@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[130]:
 
 
 import pandas as pd
 
 
-# In[20]:
+# In[131]:
 
 
 df = pd.read_csv("https://raw.githubusercontent.com/Idanlau/Cloudera_Hackathon/Word-Encoding/artist_fame.csv")
 df
 
 
-# In[21]:
+# In[132]:
 
 
 movement_df = pd.get_dummies(df['movement'])
@@ -23,32 +23,32 @@ movement_df.drop(columns='[nan]',inplace=True)
 period_df.drop(columns='[nan]',inplace=True)
 
 
-# In[22]:
+# In[133]:
 
 
 df.drop(columns='movement',inplace=True)
 df.drop(columns='period',inplace=True)
 
 
-# In[23]:
+# In[134]:
 
 
 df = df.join(movement_df)
 
 
-# In[24]:
+# In[135]:
 
 
 df = df.join(period_df)
 
 
-# In[25]:
+# In[136]:
 
 
 df
 
 
-# In[26]:
+# In[137]:
 
 
 df['yearCreation'] = pd.to_numeric(df['yearCreation'],errors = "coerce")
@@ -58,7 +58,7 @@ df['yearCreation'] = df['yearCreation'].fillna(df['yearCreation'].median()) #Fil
 df['yearCreation']
 
 
-# In[27]:
+# In[138]:
 
 
 df['price'] = df['price'].str.replace("USD","") #Dropping the USD string so its just numbers
@@ -67,7 +67,7 @@ df['price'] = pd.to_numeric(df['price'])
 df['price']
 
 
-# In[28]:
+# In[139]:
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -76,26 +76,26 @@ condition = vectorizer.fit_transform(df['condition'])
 condition
 
 
-# In[29]:
+# In[140]:
 
 
 vectorizer.get_feature_names_out()
 
 
-# In[30]:
+# In[141]:
 
 
 print(condition.toarray())
 
 
-# In[31]:
+# In[142]:
 
 
 condition_labels = pd.DataFrame(condition.toarray(),columns=vectorizer.get_feature_names())
 condition_labels
 
 
-# In[32]:
+# In[143]:
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -104,20 +104,20 @@ signed = vectorizer2.fit_transform(df['signed'])
 signed
 
 
-# In[33]:
+# In[144]:
 
 
 vectorizer2.get_feature_names_out()
 
 
-# In[34]:
+# In[145]:
 
 
 signed_labels = pd.DataFrame(signed.toarray(),columns=vectorizer2.get_feature_names())
 signed_labels
 
 
-# In[35]:
+# In[146]:
 
 
 df.drop(columns='signed',inplace=True)
@@ -125,51 +125,44 @@ df.drop(columns='condition',inplace=True)
 df.drop(columns='artist',inplace=True)
 
 
-# In[36]:
+# In[147]:
 
 
 signed_labels = signed_labels.astype(int)
 condition_labels = condition_labels.astype(int)
 
 
-# In[37]:
+# In[148]:
 
 
 df = df.join(condition_labels)
-df = df.drop(['Unnamed:0','Unnamed:0.1','Unnamed:0.1.1'])
 
 
-# In[38]:
+# In[149]:
 
 
 df
 
 
-# In[39]:
+# In[150]:
 
 
 df = df.join(signed_labels,lsuffix="_left", rsuffix="_right", how='right')
 
 
-# In[40]:
+# In[151]:
+
+
+df = df.drop(df.columns[[0, 1, 2,5]],axis = 1)
+
+
+# In[152]:
 
 
 df
 
 
-# In[41]:
-
-
-df.to_csv('artdatasetmod.csv')
-
-
-# In[43]:
-
-
-print(df['Performance Art'])
-
-
-# In[128]:
+# In[161]:
 
 
 from sklearn.model_selection import train_test_split
@@ -178,7 +171,7 @@ Y = df["price"]
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
 
 
-# In[129]:
+# In[162]:
 
 
 from sklearn.ensemble import RandomForestRegressor
@@ -190,7 +183,7 @@ print("Testing Score: ",regr.score(X_test,y_test))
 print("Testing Mean Absolute Error: ", mean_absolute_error(y_test,regr.predict(X_test)))
 
 
-# In[130]:
+# In[163]:
 
 
 import numpy as np
@@ -199,16 +192,17 @@ sorted_indices = np.argsort(importances)[::-1]
  
 feat_labels = df.columns[1:]
  
-for f in range(15):
+for f in range(40):
     print("%2d) %-*s %f" % (f + 1, 10,
                             feat_labels[sorted_indices[f]],
-                            importances[sorted_indices[f]]))
+                            importances[sorted_indices[f]]),"index: ",df.columns.get_loc(str(feat_labels[sorted_indices[f]])))
 
 
-# In[131]:
+# In[164]:
 
 
 from sklearn.linear_model import LinearRegression
+import numpy as np
 regr = LinearRegression()
 regr.fit(X_train,y_train)
 print("Training Score: ",regr.score(X_train,y_train))
@@ -216,7 +210,7 @@ print("Testing Score: ",regr.score(X_test,y_test))
 print("Testing Mean Absolute Error: ", mean_absolute_error(y_test,regr.predict(X_test)))
 
 
-# In[132]:
+# In[165]:
 
 
 from sklearn.neighbors import KNeighborsRegressor
@@ -227,7 +221,7 @@ print("Testing Score: ",regr.score(X_test,y_test))
 print("Testing Mean Absolute Error: ", mean_absolute_error(y_test,regr.predict(X_test)))
 
 
-# In[ ]:
+# In[166]:
 
 
 # import libraries
@@ -239,7 +233,7 @@ rfe = RFE(estimator=RandomForestRegressor(max_depth=20, random_state=0),n_featur
 rfe.fit(X, Y)
 
 
-# In[ ]:
+# In[167]:
 
 
 forest = RandomForestRegressor(max_depth=20, random_state=0)
@@ -249,7 +243,7 @@ print("Testing Score: ",forest.score(rfe.transform(X_test),y_test))
 print("Testing Mean Absolute Error: ", mean_absolute_error(y_test,forest.predict(rfe.transform(X_test))))
 
 
-# In[ ]:
+# In[168]:
 
 
 import numpy as np
@@ -261,20 +255,26 @@ feat_labels = df.columns[1:]
 for f in range(15):
     print("%2d) %-*s %f" % (f + 1, 10,
                             feat_labels[sorted_indices[f]],
-                            importances[sorted_indices[f]]))
+                            importances[sorted_indices[f]]),"index: ",df.columns.get_loc(str(feat_labels[sorted_indices[f]])))
 
 
-# In[50]:
+# In[169]:
 
 
 print(X.shape[1])
 
 
-# In[127]:
+# In[170]:
 
 
 from joblib import dump, load
 dump(forest, 'ArtNum.joblib') 
+
+
+# In[1]:
+
+
+print("The model complexity has been greatly reduced using recursive feature elimination from 1286 features down to 15 features. However the simplified model estimation is around 300 dollars worse which is about 10 percent worse.")
 
 
 # In[ ]:
