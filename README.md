@@ -20,7 +20,7 @@ After using web scraping techniques to generate a CSV file with the links to dow
 After experimenting with 3 different models, Random forest regressor, Multiple linear regression and KNN regressor, Random Forest Regressor yeilded the best results and the metric used to evaluate the models were Mean Average Error. Preprocessing techniques to deal with categorical data was one hot encoding and for text based data, bag of words was used.
 
 ### Fame Calculator
-For every artist name the user provides, the artist will be queried on the Artsy to find their biography, and a numerical fame metric will be calulcated based on the length of their biography. This fame value is then inputted into the numerical model to provide greater data about the artist. 
+For every artist name the user provides, the artist will be queried on the Artsy using the Selenium web scraping library to find their biography, and a numerical fame metric will be calulcated based on the length of their biography. This fame value is then inputted into the numerical model to provide greater data about the artist. 
 
 ## Computer Vision
 The computer vision model takes in an image of the art piec and uses a Convolutional Neural Network which contains multiple layers to filter various attributes of the art piece that demonstrate a correlation with the art selling price using the TensorFlow Keras API.
