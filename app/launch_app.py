@@ -18,7 +18,7 @@ def load_input():
     if uploaded_file is not None:
         image_data = uploaded_file.getvalue()
         st.image(image_data)
-        image_array = np.array(Image.open(uploaded_file))
+        image_array = np.array(Image.open(uploaded_file).convert("RGB"))
 
     artist = st.text_input("artist? ") #1
     year = st.text_input("year? ") #2
@@ -41,7 +41,6 @@ def load_input():
     st.write(submit)
 
     if submit:
-        print(biography_artsy(str(artist)).split())
         fame = len(biography_artsy(str(artist)).split())
         input_data = [fame,year,Abstract,
                       abstract_express,art_brut,art_deco,
@@ -52,10 +51,10 @@ def load_input():
 
         image_array = cv2.resize(image_array, (150, 150), interpolation=cv2.INTER_AREA)
         image_array = np.expand_dims(image_array, axis=0)
+        loss = 0.99
         image_regr_price = image_regressor.predict(image_array)
-        print(image_regr_price)
-        st.text("Predicted Sell Price (USD): " + str(forest.predict([input_data])))
-
+        forest_price = forest.predict([input_data])
+        st.text("Predicted Sell Price (USD): " + str(image_regr_price * (1 - loss) + loss * forest_price))
 
 
 def main():
