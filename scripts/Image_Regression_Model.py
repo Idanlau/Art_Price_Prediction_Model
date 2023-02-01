@@ -1,3 +1,4 @@
+# Model uses CNN to predict the price of an artwork based on the image
 import pandas as pd
 import numpy as np
 import os
