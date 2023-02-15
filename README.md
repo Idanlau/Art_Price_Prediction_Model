@@ -1,5 +1,8 @@
 # Cloudera_Hackathon
 
+## Competition
+This project was a submission for the Cloudera Applied Machine Learning Prototype Hackathon: https://www.hackerearth.com/challenges/hackathon/cloudera-applied-machine-learning-prototype-hackathon/. Our project won 2nd place in competition.
+
 ## Summary:
 This project uses machine learning methods to predict the selling price of an art piece at an auction, by taking in an image of the art and art attributes from the user. The application is split into two models, a numerical model that is trained on the selling prices of pieces based on their attribute values and a computer vision model uses a Convolutional Neural Network (CNN) that is trained on images of art pieces and their respective selling prices. The final price prediction is generated using a weighted average of the outputs of the two models. The user journey includes inputing an image of the art and various attributes associated with it including (Year of the painting, the time period, How famous the artist is, descriptions of the image, etc..), and the app will output the predicted selling price of that piece at an auction. 
 
