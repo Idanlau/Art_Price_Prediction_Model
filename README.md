@@ -1,5 +1,8 @@
 # Cloudera_Hackathon
 
+## Competition
+This project was a submission for the Cloudera Applied Machine Learning Prototype Hackathon: https://www.hackerearth.com/challenges/hackathon/cloudera-applied-machine-learning-prototype-hackathon/. Our project won 2nd place in competition.
+
 ## Summary:
 This project uses machine learning methods to predict the selling price of an art piece at an auction, by taking in an image of the art and art attributes from the user. The application is split into two models, a numerical model that is trained on the selling prices of pieces based on their attribute values and a computer vision model uses a Convolutional Neural Network (CNN) that is trained on images of art pieces and their respective selling prices. The final price prediction is generated using a weighted average of the outputs of the two models. The user journey includes inputing an image of the art and various attributes associated with it including (Year of the painting, the time period, How famous the artist is, descriptions of the image, etc..), and the app will output the predicted selling price of that piece at an auction. 
 
@@ -25,4 +28,4 @@ For every artist name the user provides, the artist will be queried on the Artsy
 ## Computer Vision
 The computer vision model takes in an image of the art piece and uses a Convolutional Neural Network which contains multiple layers to filter various attributes of the art piece that demonstrate a correlation with the art selling price using the TensorFlow Keras API.
 
-It uses the pandas and numpy libraries to load the data and perform data manipulations. All of the image data inputs are resized so the image inputs are consistent. The script loads the image data and trains a convolutional neural network (CNN) to predict the price of an artwork given its image. The model is compiled using mean squared error loss and the Adam optimizer. The model is trained for 30 epochs with a batch size of 32, and the best weights are saved during training using a ModelCheckpoint callback. Finally, the mean absolute error (MAE) of the model is calculated on the test set and printed.
+It uses the pandas and numpy libraries to load the data and perform data manipulations. All of the image data inputs are resized so the image inputs are consistent. The script loads the image data and trains a convolutional neural network (CNN) to predict the price of an artwork given its image. The model is compiled using mean squared error loss and the Adam optimizer. We leveraged the Cloudera Data Science Workbench to process large quantities of images and train the model for 30 epochs with a batch size of 32, and the best weights are saved during training using a ModelCheckpoint callback. Finally, the mean absolute error (MAE) of the model is calculated on the test set and printed.
