@@ -19,7 +19,7 @@ def url_to_jpg(i, url, file_path):
 # Set Constants
 
 FILENAME = 'SothebysModern.csv'
-FILEPATH = '/Users/ishaanpoojari/Ishaan Files/ImageDownloader/Modern/'
+FILEPATH = 'ENTER FILE PATH'
 
 #Read list of URL's as Pandas DataFrame
 urls = pd.read_csv(FILENAME)
